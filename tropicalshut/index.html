@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Eksklusif Light/Dark Mode Switch</title>
+  <style>
+    :root {
+      --switch-width: 56px;
+      --switch-height: 32px;
+      --switch-padding: 4px;
+      --knob-size: 24px;
+      --light-bg: #f7f7f7;
+      --dark-bg: #1b1c1e;
+      --light-knob: #fff;
+      --dark-knob: #23242a;
+      --shadow: 0 2px 8px rgba(0,0,0,0.09);
+    }
+
+    body {
+      background: var(--light-bg);
+      color: #222;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      transition: background 0.4s, color 0.4s;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    body.dark {
+      background: var(--dark-bg);
+      color: #ececec;
+    }
+
+    .switch-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .switch-label {
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      user-select: none;
+    }
+
+    .light-dark-switch {
+      position: relative;
+      width: var(--switch-width);
+      height: var(--switch-height);
+      background: #e0e0e3;
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: background 0.4s;
+      display: flex;
+      align-items: center;
+      padding: var(--switch-padding);
+      box-sizing: border-box;
+      border: none;
+      outline: none;
+    }
+
+    .switch-knob {
+      position: absolute;
+      top: var(--switch-padding);
+      left: var(--switch-padding);
+      width: var(--knob-size);
+      height: var(--knob-size);
+      background: var(--light-knob);
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+      transition: left 0.4s cubic-bezier(.4,0,.2,1), background 0.4s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .light-dark-switch.dark {
+      background: #35363a;
+    }
+
+    .light-dark-switch.dark .switch-knob {
+      background: var(--dark-knob);
+      left: calc(var(--switch-width) - var(--knob-size) - var(--switch-padding));
+    }
+
+    /* Icon styles */
+    .switch-icon {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.1rem;
+      pointer-events: none;
+      opacity: 0.7;
+      transition: color 0.4s;
+    }
+    .icon-sun {
+      left: 10px;
+      color: #e4b300;
+    }
+    .icon-moon {
+      right: 10px;
+      color: #5dcfff;
+    }
+    .light-dark-switch.dark .icon-sun {
+      color: #888;
+    }
+    .light-dark-switch.dark .icon-moon {
+      color: #ffde87;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="switch-container">
+    <span class="switch-label">Mode</span>
+    <button class="light-dark-switch" id="modeSwitch" aria-label="Light or Dark Mode" tabindex="0">
+      <span class="switch-knob"></span>
+      <span class="switch-icon icon-sun">&#9728;</span>
+      <span class="switch-icon icon-moon">&#9790;</span>
+    </button>
+  </div>
+
+  <script>
+    const switchBtn = document.getElementById('modeSwitch');
+    const knob = switchBtn.querySelector('.switch-knob');
+    const body = document.body;
+
+    // Load mode from localStorage
+    const setMode = (dark) => {
+      if (dark) {
+        body.classList.add('dark');
+        switchBtn.classList.add('dark');
+        localStorage.setItem('mode', 'dark');
+      } else {
+        body.classList.remove('dark');
+        switchBtn.classList.remove('dark');
+        localStorage.setItem('mode', 'light');
+      }
+    };
+
+    // Initialize
+    setMode(localStorage.getItem('mode') === 'dark');
+
+    switchBtn.addEventListener('click', () => {
+      const isDark = body.classList.contains('dark');
+      setMode(!isDark);
+    });
+
+    // Keyboard accessibility
+    switchBtn.addEventListener('keydown', (e) => {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        switchBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>
